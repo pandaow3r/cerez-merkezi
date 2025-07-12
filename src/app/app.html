@@ -1,13 +1,24 @@
+<ng-container *ngIf="refresh >= 0">
 <header class="topbar">
   <div class="topbar-content">
     <img src="https://cdn-icons-png.flaticon.com/512/1047/1047711.png" alt="Çerez ikonu" class="topbar-logo" />
     <h1>Çerez Merkezi</h1>
   </div>
+  <button class="theme-toggle-btn" (click)="toggleTheme()" [attr.aria-label]="theme === 'light' ? 'Koyu tema' : 'Açık tema'">
+    <span *ngIf="theme === 'light'">
+      <!-- Ay ikonu -->
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2563EB" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3a7 7 0 0 0 9.79 9.79z"/></svg>
+    </span>
+    <span *ngIf="theme === 'dark'">
+      <!-- Güneş ikonu -->
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#FBC02D" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><path d="M12 1v2m0 18v2m11-11h-2M3 12H1m16.95 6.95-1.41-1.41M6.34 6.34 4.93 4.93m12.02 0-1.41 1.41M6.34 17.66l-1.41 1.41"/></svg>
+    </span>
+  </button>
 </header>
 <main class="main">
   <form (submit)="onSearch($event)">
     <div class="search-bar-container">
-      <input type="text" placeholder="Şehir adı girin..." [(ngModel)]="city" name="city" required />
+      <input type="text" placeholder="Şehir adı girin..." [value]="city" name="city" required (input)="onInput($event)" />
       <button type="submit" aria-label="Ara">
         Ara
         <svg viewBox="0 0 20 20"><circle cx="9" cy="9" r="7" stroke="currentColor" stroke-width="2" fill="none"/><line x1="14.5" y1="14.5" x2="19" y2="19" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
@@ -18,9 +29,10 @@
     <section *ngIf="loading">
       <p>Yükleniyor...</p>
     </section>
-    <section *ngIf="error">
-      <p style="color: #d32f2f;">{{ error }}</p>
-    </section>
+    <!-- Toast-style error message -->
+    <div *ngIf="error" class="toast-error" (click)="error = null">
+      {{ error }}
+    </div>
     <section *ngIf="pagedEvents?.length" class="event-list">
       <div *ngFor="let event of pagedEvents" class="event-card mini">
         <img [src]="event.image || 'https://via.placeholder.com/400x200?text=Etkinlik'" alt="Etkinlik görseli" class="event-img" />
@@ -43,3 +55,4 @@
     </section>
   </ng-container>
 </main>
+</ng-container>
